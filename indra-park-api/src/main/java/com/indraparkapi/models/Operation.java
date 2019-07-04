@@ -1,19 +1,16 @@
 package com.indraparkapi.models;
 
 import javax.persistence.*;
-import java.util.Date;
+import java.time.LocalDateTime;
 
-@Entity
-public class Operation {
+@Entity()
+@Table(name = "operations")
+public class Operation extends BaseModel {
 
     public enum OperationType {
         IN,
         OUT
     }
-
-    @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
-    private long id;
 
     @Embedded()
     private Vehicle vehicle;
@@ -21,33 +18,24 @@ public class Operation {
     @Column(name = "operation_type")
     private OperationType type;
 
-    @Temporal(TemporalType.TIMESTAMP)
-    private Date enteredAt;
+    @Column(name = "entered_at")
+    private LocalDateTime enteredAt;
 
-    @Temporal(TemporalType.TIMESTAMP)
-    private Date exitedAt;
+    @Column(name = "exited_at")
+    private LocalDateTime exitedAt;
 
-    public Operation(Vehicle vehicle, OperationType type, Date enteredAt) {
+    public Operation() {
+    }
+
+    public Operation(Vehicle vehicle, OperationType type, LocalDateTime enteredAt) {
         this.setVehicle(vehicle);
         this.setType(type);
         this.setEnteredAt(enteredAt);
     }
 
-    public Operation(Vehicle vehicle, OperationType type, Date enteredAt, Date exitedAt) {
+    public Operation(Vehicle vehicle, OperationType type, LocalDateTime enteredAt, LocalDateTime exitedAt) {
         this(vehicle, type, enteredAt);
         this.setExitedAt(exitedAt);
-    }
-
-    public Long getId() {
-        return id;
-    }
-
-    public void setId(Long id) {
-        this.id = id;
-    }
-
-    public void setId(int id) {
-        this.id = (long) id;
     }
 
     public Vehicle getVehicle() {
@@ -66,19 +54,19 @@ public class Operation {
         this.type = type;
     }
 
-    public Date getEnteredAt() {
+    public LocalDateTime getEnteredAt() {
         return enteredAt;
     }
 
-    public void setEnteredAt(Date enteredAt) {
+    public void setEnteredAt(LocalDateTime enteredAt) {
         this.enteredAt = enteredAt;
     }
 
-    public Date getExitedAt() {
+    public LocalDateTime getExitedAt() {
         return exitedAt;
     }
 
-    public void setExitedAt(Date exitedAt) {
+    public void setExitedAt(LocalDateTime exitedAt) {
         this.exitedAt = exitedAt;
     }
 }

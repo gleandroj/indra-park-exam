@@ -51,6 +51,9 @@ public class Vehicle {
     @Column(name = "vehicle_plate")
     private String plate;
 
+    public Vehicle() {
+    }
+
     public void setType(VehicleType type) {
         this.type = type;
     }

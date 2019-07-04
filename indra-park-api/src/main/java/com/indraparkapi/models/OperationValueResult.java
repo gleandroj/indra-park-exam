@@ -1,10 +1,12 @@
 package com.indraparkapi.models;
 
-import java.util.Date;
+
+import java.time.LocalDateTime;
+import java.time.ZoneId;
 
 public class OperationValueResult {
 
-    public static final int SECOND_TIMESTAMP = 1000;
+    public static final int SECOND_TIMESTAMP = 1;
     public static final int MINUTE_TIMESTAMP = OperationValueResult.SECOND_TIMESTAMP * 60;
     public static final int HOUR_TIMESTAMP = OperationValueResult.MINUTE_TIMESTAMP * 60;
 
@@ -18,19 +20,19 @@ public class OperationValueResult {
     private double totalHours;
 
     private Long operationId;
-    private Date enteredAt;
-    private Date exitedAt;
+    private LocalDateTime enteredAt;
+    private LocalDateTime exitedAt;
 
     private Vehicle.VehicleStrategy vehicleStrategy;
 
-    public static OperationValueResult calculateFor(Operation operation, Date exitedAt) throws Exception {
+    public static OperationValueResult calculateFor(Operation operation, LocalDateTime exitedAt) throws Exception {
         if (operation.getEnteredAt() == null) {
             throw new Exception("Operation Entered at shouldn't be null.");
         }
         return (new OperationValueResult(operation.getId(), operation.getVehicle().getType(), operation.getEnteredAt(), exitedAt));
     }
 
-    protected OperationValueResult(Long operationId, Vehicle.VehicleStrategy vehicleStrategy, Date enteredAt, Date exitedAt) {
+    protected OperationValueResult(Long operationId, Vehicle.VehicleStrategy vehicleStrategy, LocalDateTime enteredAt, LocalDateTime exitedAt) {
         this.operationId = operationId;
         this.enteredAt = enteredAt;
         this.exitedAt = exitedAt;
@@ -39,8 +41,9 @@ public class OperationValueResult {
     }
 
     public void calculate() {
-        long exitedAtTime = exitedAt.getTime();
-        long enteredAtTime = enteredAt.getTime();
+        ZoneId zone = ZoneId.of("UTC");
+        long exitedAtTime = exitedAt.atZone(zone).toInstant().getEpochSecond();
+        long enteredAtTime = enteredAt.atZone(zone).toInstant().getEpochSecond();
 
         double diff = (double) exitedAtTime - (double) enteredAtTime;
         double totalHours = diff / HOUR_TIMESTAMP;
@@ -61,11 +64,11 @@ public class OperationValueResult {
         return operationId;
     }
 
-    public Date getEnteredAt() {
+    public LocalDateTime getEnteredAt() {
         return enteredAt;
     }
 
-    public Date getExitedAt() {
+    public LocalDateTime getExitedAt() {
         return exitedAt;
     }
 
