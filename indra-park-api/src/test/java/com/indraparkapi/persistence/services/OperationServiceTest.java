@@ -1,37 +1,36 @@
-package com.indraparkapi.services;
+package com.indraparkapi.persistence.services;
 
 import com.indraparkapi.BaseTest;
-import com.indraparkapi.models.Operation;
-import com.indraparkapi.models.OperationValueResult;
-import com.indraparkapi.models.Vehicle;
-import com.indraparkapi.repositories.OperationRepository;
+import com.indraparkapi.persistence.models.Operation;
+import com.indraparkapi.persistence.models.OperationValueResult;
+import com.indraparkapi.persistence.models.Vehicle;
+import com.indraparkapi.persistence.repositories.OperationRepository;
+import com.indraparkapi.persistence.specifications.OperationSpecification;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase;
-import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
-import org.springframework.boot.test.autoconfigure.orm.jpa.TestEntityManager;
-import org.springframework.test.context.junit4.SpringRunner;
+import org.mockito.InjectMocks;
+import org.mockito.Mock;
+import org.mockito.Mockito;
+import org.mockito.junit.MockitoJUnitRunner;
+import org.springframework.data.jpa.domain.Specification;
+
+import static org.mockito.AdditionalAnswers.returnsFirstArg;
+import static org.mockito.ArgumentMatchers.*;
+import static org.assertj.core.api.Assertions.assertThat;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
 
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.mockito.ArgumentMatchers.any;
+@RunWith(MockitoJUnitRunner.class)
+public class OperationServiceTest extends BaseTest {
 
-@RunWith(SpringRunner.class)
-@DataJpaTest()
-@AutoConfigureTestDatabase(replace = AutoConfigureTestDatabase.Replace.NONE)
-public class OperationServiceIntegrationTest extends BaseTest {
-    @Autowired
-    private TestEntityManager entityManager;
-
-    @Autowired
-    private OperationRepository operationRepository;
-
+    @InjectMocks
     private OperationService operationService;
 
+    @Mock
+    private OperationRepository operationRepository;
     private Operation operation;
     private Vehicle car;
     private Vehicle motorCycle;
@@ -44,14 +43,15 @@ public class OperationServiceIntegrationTest extends BaseTest {
         motorCycle = new Vehicle(Vehicle.VehicleType.Motorcycle, "Ducati 1199 Panigale S", "JAV0001");
         truck = new Vehicle(Vehicle.VehicleType.Truck, "Axor 4144 6x4", "JAV0003");
         pickup = new Vehicle(Vehicle.VehicleType.Pickup, "Range Rover Sport SVR Facelift", "JAV0004");
-
         operation = new Operation(car, Operation.OperationType.IN, this.now(), null);
-
-        this.operationService = new OperationService(operationRepository);
+        operation.setId(1);
     }
 
     @Test()
     public void it_should_make_a_entry_operation() {
+        Mockito.when(operationRepository.save(any(Operation.class)))
+                .thenReturn(operation);
+
         Operation entry = operationService.entry(car);
 
         assertThat(entry).isNotNull();
@@ -68,7 +68,6 @@ public class OperationServiceIntegrationTest extends BaseTest {
 
     @Test()
     public void it_should_allow_to_calculate_computed_price() throws Exception {
-        operation = entityManager.persistAndFlush(operation);
         OperationValueResult computed = operationService.calculate(operation);
 
         assertThat(computed).isNotNull();
@@ -86,8 +85,6 @@ public class OperationServiceIntegrationTest extends BaseTest {
         operation.setEnteredAt(date);
         operation.setVehicle(car);
 
-        operation = entityManager.persistAndFlush(operation);
-
         OperationValueResult computed = operationService.calculate(operation);
 
         assertThat(computed).isNotNull();
@@ -104,7 +101,7 @@ public class OperationServiceIntegrationTest extends BaseTest {
     public void it_should_return_15_when_a_car_stay_0_hour() throws Exception {
         operation.setEnteredAt(this.now());
         operation.setVehicle(car);
-        operation = entityManager.persistAndFlush(operation);
+
         OperationValueResult computed = operationService.calculate(operation);
 
         assertThat(computed).isNotNull();
@@ -120,7 +117,7 @@ public class OperationServiceIntegrationTest extends BaseTest {
     public void it_should_return_30_when_a_car_stay_2_hour() throws Exception {
         operation.setEnteredAt(this.now().minusHours(2));
         operation.setVehicle(car);
-        operation = entityManager.persistAndFlush(operation);
+
         OperationValueResult computed = operationService.calculate(operation);
 
         assertThat(computed).isNotNull();
@@ -135,7 +132,7 @@ public class OperationServiceIntegrationTest extends BaseTest {
     public void it_should_return_20_when_a_motorcycle_stay_2_hour() throws Exception {
         operation.setEnteredAt(this.now().minusHours(2));
         operation.setVehicle(motorCycle);
-        operation = entityManager.persistAndFlush(operation);
+
         OperationValueResult computed = operationService.calculate(operation);
 
         assertThat(computed).isNotNull();
@@ -150,7 +147,7 @@ public class OperationServiceIntegrationTest extends BaseTest {
     public void it_should_return_70_when_a_truck_stay_2_hour() throws Exception {
         operation.setEnteredAt(this.now().minusHours(2));
         operation.setVehicle(truck);
-        operation = entityManager.persistAndFlush(operation);
+
         OperationValueResult computed = operationService.calculate(operation);
 
         assertThat(computed).isNotNull();
@@ -165,7 +162,7 @@ public class OperationServiceIntegrationTest extends BaseTest {
     public void it_should_return_40_when_a_pickup_stay_2_hour() throws Exception {
         operation.setEnteredAt(this.now().minusHours(2));
         operation.setVehicle(pickup);
-        operation = entityManager.persistAndFlush(operation);
+
         OperationValueResult computed = operationService.calculate(operation);
 
         assertThat(computed).isNotNull();
@@ -180,7 +177,10 @@ public class OperationServiceIntegrationTest extends BaseTest {
     @Test()
     public void it_should_make_a_exit_operation() {
         operation.setVehicle(car);
-        operation = entityManager.persistAndFlush(operation);
+
+        Mockito.when(operationRepository.save(any(Operation.class)))
+                .then(returnsFirstArg());
+
         Operation exit = operationService.exit(operation);
 
         assertThat(exit).isNotNull();
@@ -197,8 +197,14 @@ public class OperationServiceIntegrationTest extends BaseTest {
 
     @Test()
     public void it_should_return_a_list_of_operations() {
-        operation = entityManager.persistAndFlush(operation);
+        List<Operation> operations = new ArrayList<>();
+        operations.add(operation);
+
+        Mockito.when(operationRepository.findAll(any())).thenReturn(operations);
+
         List<Operation> list = operationService.filter(null, null, null);
+
+        assertThat(list.contains(operation)).isTrue();
         assertThat(list.size()).isEqualTo(1);
     }
 }

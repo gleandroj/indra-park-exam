@@ -1,4 +1,4 @@
-package com.indraparkapi.models;
+package com.indraparkapi.persistence.models;
 
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;

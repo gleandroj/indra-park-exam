@@ -1,4 +1,4 @@
-package com.indraparkapi.models;
+package com.indraparkapi.persistence.models;
 
 
 import java.time.LocalDateTime;

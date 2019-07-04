@@ -1,12 +1,21 @@
-package com.indraparkapi.models;
+package com.indraparkapi.persistence.models;
+
+import com.fasterxml.jackson.annotation.JsonFormat;
+import com.vladmihalcea.hibernate.type.json.JsonBinaryType;
+import org.hibernate.annotations.TypeDef;
+import org.hibernate.annotations.TypeDefs;
 
 import javax.persistence.*;
 import java.time.LocalDateTime;
 
 @Entity()
 @Table(name = "operations")
+@TypeDefs({
+        @TypeDef(name = "jsonb", typeClass = JsonBinaryType.class)
+})
 public class Operation extends BaseModel {
 
+    @JsonFormat(shape = JsonFormat.Shape.NUMBER_INT)
     public enum OperationType {
         IN,
         OUT

@@ -1,10 +1,9 @@
-package com.indraparkapi.controllers;
+package com.indraparkapi.http.controllers;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
 import com.indraparkapi.BaseTest;
-import com.indraparkapi.models.Operation;
-import com.indraparkapi.models.Vehicle;
-import com.indraparkapi.repositories.OperationRepository;
+import com.indraparkapi.persistence.models.Operation;
+import com.indraparkapi.persistence.models.Vehicle;
+import com.indraparkapi.persistence.repositories.OperationRepository;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -15,6 +14,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.MediaType;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.web.servlet.MockMvc;
+import org.springframework.transaction.annotation.Transactional;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.hamcrest.Matchers.is;
@@ -26,6 +26,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @SpringBootTest()
 @AutoConfigureMockMvc()
 @AutoConfigureTestDatabase(replace = AutoConfigureTestDatabase.Replace.NONE)
+@Transactional()
 public class OperationControllerTest extends BaseTest {
     private static final String BASE_URL = "/api/operations";
 

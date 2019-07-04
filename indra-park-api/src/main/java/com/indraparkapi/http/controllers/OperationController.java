@@ -1,10 +1,10 @@
-package com.indraparkapi.controllers;
+package com.indraparkapi.http.controllers;
 
 import com.indraparkapi.exceptions.ApiException;
-import com.indraparkapi.models.Operation;
-import com.indraparkapi.models.OperationValueResult;
-import com.indraparkapi.models.Vehicle;
-import com.indraparkapi.services.OperationService;
+import com.indraparkapi.persistence.models.Operation;
+import com.indraparkapi.persistence.models.OperationValueResult;
+import com.indraparkapi.persistence.models.Vehicle;
+import com.indraparkapi.persistence.services.OperationService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.HttpStatus;
@@ -58,5 +58,8 @@ public class OperationController {
         ));
     }
 
-    //TODO: Dashboard Response
+    @RequestMapping(method = RequestMethod.GET, value = "/report")
+    public ResponseEntity<?> report() {
+        return ResponseEntity.status(HttpStatus.OK).body(operationService.countLastSevenDays());
+    }
 }

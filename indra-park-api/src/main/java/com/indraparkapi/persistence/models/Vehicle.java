@@ -1,4 +1,6 @@
-package com.indraparkapi.models;
+package com.indraparkapi.persistence.models;
+
+import com.fasterxml.jackson.annotation.JsonFormat;
 
 import javax.persistence.*;
 
@@ -19,6 +21,7 @@ public class Vehicle {
         double getHourPrice();
     }
 
+    @JsonFormat(shape = JsonFormat.Shape.NUMBER_INT)
     public enum VehicleType implements VehicleStrategy {
         Car {
             public double getHourPrice() {
