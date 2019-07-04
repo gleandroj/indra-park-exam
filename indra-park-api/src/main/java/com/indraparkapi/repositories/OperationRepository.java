@@ -20,4 +20,6 @@ public interface OperationRepository extends CrudRepository<Operation, Long> {
             @Param("toDateTime") LocalDateTime to,
             @Param("plate") String plate
     );
+
+    //TODO: Dashboard Query, DataSetResult Class
 }

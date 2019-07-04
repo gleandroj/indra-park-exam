@@ -1,5 +1,6 @@
 package com.indraparkapi.services;
 
+import com.indraparkapi.exceptions.ApiException;
 import com.indraparkapi.models.Operation;
 import com.indraparkapi.models.OperationValueResult;
 import com.indraparkapi.models.Vehicle;
@@ -8,14 +9,25 @@ import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Optional;
 
 @Service()
 public class OperationService {
 
     private OperationRepository operationRepository;
 
-    public OperationService(OperationRepository operationRepository){
+    public OperationService(OperationRepository operationRepository) {
         this.operationRepository = operationRepository;
+    }
+
+    public Operation findOrFail(long id) throws ApiException {
+        Optional<Operation> op = this.operationRepository.findById(
+                id
+        );
+        if (!op.isPresent()) {
+            throw ApiException.modelNotFound();
+        }
+        return op.get();
     }
 
     public List<Operation> filter(
