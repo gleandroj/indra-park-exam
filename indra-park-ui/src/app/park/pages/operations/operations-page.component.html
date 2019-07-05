@@ -2,10 +2,10 @@
     <div fxLayout="row wrap">
         <mat-form-field appearance="outline" fxFlex.gt-sm="20%" fxFlex.gt-xs="30%" fxFlex.xs="100%">
             <mat-label>Placa</mat-label>
-            <input #input (input)="plateSubject.next(input.value)" matInput type="text" placeholder="Digite aqui...">
+            <input #input (input)="searchSubject.next(input.value)" matInput type="text" placeholder="Digite aqui...">
             <mat-icon matPrefix>search</mat-icon>
             <mat-icon style="cursor: pointer;" *ngIf="input.value != null && input.value != ''"
-                (click)="plateSubject.next(input.value = null)" matSuffix>
+                (click)="searchSubject.next(input.value = null)" matSuffix>
                 clear
             </mat-icon>
         </mat-form-field>
