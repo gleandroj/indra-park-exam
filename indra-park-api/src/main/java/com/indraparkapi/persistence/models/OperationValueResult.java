@@ -9,7 +9,6 @@ public class OperationValueResult {
     public static final int SECOND_TIMESTAMP = 1;
     public static final int MINUTE_TIMESTAMP = OperationValueResult.SECOND_TIMESTAMP * 60;
     public static final int HOUR_TIMESTAMP = OperationValueResult.MINUTE_TIMESTAMP * 60;
-
     public static final double MIN_PERMANENCY_HOURS = 1.0;
 
     private double hours;
@@ -32,7 +31,7 @@ public class OperationValueResult {
         return (new OperationValueResult(operation.getId(), operation.getVehicle().getType(), operation.getEnteredAt(), exitedAt));
     }
 
-    protected OperationValueResult(Long operationId, Vehicle.VehicleStrategy vehicleStrategy, LocalDateTime enteredAt, LocalDateTime exitedAt) {
+    private OperationValueResult(Long operationId, Vehicle.VehicleStrategy vehicleStrategy, LocalDateTime enteredAt, LocalDateTime exitedAt) {
         this.operationId = operationId;
         this.enteredAt = enteredAt;
         this.exitedAt = exitedAt;
@@ -40,7 +39,7 @@ public class OperationValueResult {
         this.calculate();
     }
 
-    public void calculate() {
+    private void calculate() {
         ZoneId zone = ZoneId.of("UTC");
         long exitedAtTime = exitedAt.atZone(zone).toInstant().getEpochSecond();
         long enteredAtTime = enteredAt.atZone(zone).toInstant().getEpochSecond();
