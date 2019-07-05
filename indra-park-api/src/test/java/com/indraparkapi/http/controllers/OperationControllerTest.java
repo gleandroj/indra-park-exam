@@ -16,9 +16,12 @@ import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.time.format.DateTimeFormatter;
+
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.hamcrest.Matchers.is;
+import static org.hamcrest.Matchers.*;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
@@ -41,22 +44,20 @@ public class OperationControllerTest extends BaseTest {
 
     private Operation operation;
     private Vehicle car;
-    private Vehicle motorCycle;
-    private Vehicle truck;
-    private Vehicle pickup;
+    private String from;
+    private String to;
 
     @Before
     public void setUp() {
         car = new Vehicle(Vehicle.VehicleType.Car, "Ferrari 488 Pista", "JAV0000");
-        motorCycle = new Vehicle(Vehicle.VehicleType.Motorcycle, "Ducati 1199 Panigale S", "JAV0001");
-        truck = new Vehicle(Vehicle.VehicleType.Truck, "Axor 4144 6x4", "JAV0003");
-        pickup = new Vehicle(Vehicle.VehicleType.Pickup, "Range Rover Sport SVR Facelift", "JAV0004");
-
         operation = new Operation(car, Operation.OperationType.IN, this.now(), null);
+
+        from = DateTimeFormatter.ISO_LOCAL_DATE_TIME.format(this.now().minusDays(1));
+        to = DateTimeFormatter.ISO_LOCAL_DATE_TIME.format(this.now().plusDays(1));
     }
 
     @Test
-    public void it_should_load_context() throws Exception {
+    public void it_should_load_context() {
         assertThat(operationController).isNotNull();
     }
 
@@ -69,5 +70,79 @@ public class OperationControllerTest extends BaseTest {
                 .andExpect(jsonPath("$[0].id", is(operation.getId().intValue())));
     }
 
-    //TODO: Add More Tests Case
+    @Test
+    public void it_should_list_operations_between_dates() throws Exception {
+        operationRepository.save(operation);
+
+        mockMvc.perform(get(BASE_URL).param("from", from).param("to", to)).andDo(print()).andExpect(status().isOk())
+                .andExpect(content().contentType(MediaType.APPLICATION_JSON_UTF8))
+                .andExpect(jsonPath("$[0].id", is(operation.getId().intValue())));
+    }
+
+    @Test
+    public void it_should_return_a_empty_list_operations_between_dates() throws Exception {
+        operationRepository.save(operation);
+
+        mockMvc.perform(get(BASE_URL).param("from", DateTimeFormatter.ISO_LOCAL_DATE_TIME.format(this.now().plusDays(1))).param("to", DateTimeFormatter.ISO_LOCAL_DATE_TIME.format(this.now().plusDays(1)))).andDo(print()).andExpect(status().isOk())
+                .andExpect(content().contentType(MediaType.APPLICATION_JSON_UTF8))
+                .andExpect(jsonPath("$", hasSize(0)));
+    }
+
+    @Test
+    public void it_should_list_operations_by_plate() throws Exception {
+        operationRepository.save(operation);
+        mockMvc.perform(get(BASE_URL).param("plate", operation.getVehicle().getPlate())).andDo(print()).andExpect(status().isOk())
+                .andExpect(content().contentType(MediaType.APPLICATION_JSON_UTF8))
+                .andExpect(jsonPath("$", hasSize(1)))
+                .andExpect(jsonPath("$[0]['vehicle']['plate']", is(operation.getVehicle().getPlate())));
+    }
+
+    @Test
+    public void it_should_list_operations_between_dates_and_plate() throws Exception {
+        operationRepository.save(operation);
+        mockMvc.perform(get(BASE_URL).param("from", from).param("to", to).param("plate", operation.getVehicle().getPlate())).andDo(print()).andExpect(status().isOk())
+                .andExpect(content().contentType(MediaType.APPLICATION_JSON_UTF8))
+                .andExpect(jsonPath("$", hasSize(1)))
+                .andExpect(jsonPath("$[0]['vehicle']['plate']", is(operation.getVehicle().getPlate())));
+    }
+
+
+    @Test
+    public void it_should_make_a_vehicle_entry() throws Exception {
+        mockMvc.perform(post(BASE_URL).contentType(MediaType.APPLICATION_JSON).content(asJsonString(car)))
+                .andDo(print())
+                .andExpect(status().isCreated())
+                .andExpect(content().contentType(MediaType.APPLICATION_JSON_UTF8))
+                .andExpect(jsonPath("$['vehicle']['plate']", is(operation.getVehicle().getPlate())));
+    }
+
+    @Test
+    public void it_should_make_a_vehicle_exit() throws Exception {
+        operationRepository.save(operation);
+        mockMvc.perform(get(BASE_URL + "/" + operation.getId() + "/exit"))
+                .andDo(print())
+                .andExpect(status().isOk())
+                .andExpect(content().contentType(MediaType.APPLICATION_JSON_UTF8))
+                .andExpect(jsonPath("$['vehicle']['plate']", is(operation.getVehicle().getPlate())))
+                .andExpect(jsonPath("$['exitedAt']", containsString(DateTimeFormatter.ofPattern("y-MM-dd").format(this.now()))));
+    }
+
+    @Test
+    public void it_should_make_a_vehicle_calculation() throws Exception {
+        operationRepository.save(operation);
+        mockMvc.perform(get(BASE_URL + "/" + operation.getId() + "/calculate"))
+                .andDo(print())
+                .andExpect(status().isOk());
+
+    }
+
+    @Test
+    public void it_should_get_report() throws Exception {
+        operationRepository.save(operation);
+        mockMvc.perform(get(BASE_URL + "/report"))
+                .andDo(print())
+                .andExpect(status().isOk());
+    }
+
+
 }

@@ -1,6 +1,8 @@
 package com.indraparkapi.persistence.services;
 
+import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.indraparkapi.BaseTest;
+import com.indraparkapi.exceptions.ApiException;
 import com.indraparkapi.persistence.models.Operation;
 import com.indraparkapi.persistence.models.OperationValueResult;
 import com.indraparkapi.persistence.models.Vehicle;
@@ -15,7 +17,7 @@ import org.springframework.boot.test.autoconfigure.orm.jpa.TestEntityManager;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.time.LocalDateTime;
+import java.time.*;
 import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -201,5 +203,34 @@ public class OperationServiceIntegrationTest extends BaseTest {
         operation = entityManager.persistAndFlush(operation);
         List<Operation> list = operationService.filter(null, null, null);
         assertThat(list.size()).isEqualTo(1);
+    }
+
+    @Test()
+    public void it_should_return_a_list_of_seven_days() {
+        operation = entityManager.persistAndFlush(operation);
+        LocalDateTime firstDay = LocalDateTime.of(LocalDate.now().minusDays(6), LocalTime.of(0, 0, 0));
+        long epochFirst = ZonedDateTime.of(firstDay, ZoneId.of("UTC")).toInstant().getEpochSecond() * 1000;
+
+        LocalDateTime lastDay = LocalDateTime.of(LocalDate.now(), LocalTime.of(0, 0, 0));
+        long epochLast = ZonedDateTime.of(lastDay, ZoneId.of("UTC")).toInstant().getEpochSecond() * 1000;
+
+        List<ObjectNode> list = operationService.countVehicleTypeLastSevenDays();
+        assertThat(list.size()).isEqualTo(4);
+        assertThat(list.get(0).get("data").get(0).get(0).longValue()).isEqualTo(epochFirst);
+        assertThat(list.get(0).get("data").get(6).get(0).longValue()).isEqualTo(epochLast);
+    }
+
+
+    @Test()
+    public void it_should_find_a_operation_by_id() throws ApiException {
+        entityManager.persistAndFlush(operation);
+        Operation op = operationService.findOrFail(operation.getId());
+        assertThat(op).isNotNull();
+        assertThat(op.getId()).isEqualTo(operation.getId());
+    }
+
+    @Test(expected = ApiException.class)
+    public void it_should_throw_a_exception_when_operation_not_exists() throws ApiException {
+        operationService.findOrFail(0);
     }
 }

@@ -22,7 +22,7 @@ public class OperationController {
     private OperationService operationService;
 
     @RequestMapping(method = RequestMethod.GET)
-    public ResponseEntity<List<Operation>> all(
+    public ResponseEntity<List<Operation>> filter(
             @RequestParam(name = "from", required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) LocalDateTime fromData,
             @RequestParam(name = "to", required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) LocalDateTime toData,
             @RequestParam(name = "plate", required = false) String plate
@@ -30,7 +30,6 @@ public class OperationController {
         return ResponseEntity.ok(this.operationService.filter(fromData, toData, plate == null || plate.equals("") ? null : plate));
     }
 
-    //TODO: Test
     @RequestMapping(method = RequestMethod.POST)
     public ResponseEntity<Operation> entry(
             @RequestBody Vehicle vehicle
@@ -38,28 +37,26 @@ public class OperationController {
         return ResponseEntity.status(HttpStatus.CREATED).body(operationService.entry(vehicle));
     }
 
-    //TODO: Test
     @RequestMapping(method = RequestMethod.GET, value = "/{id}/exit")
     public ResponseEntity<Operation> exit(
             @PathVariable("id") long operationId
     ) throws ApiException {
-        return ResponseEntity.status(HttpStatus.CREATED).body(operationService.exit(
+        return ResponseEntity.status(HttpStatus.OK).body(operationService.exit(
                 operationService.findOrFail(operationId)
         ));
     }
 
-    //TODO: Test
     @RequestMapping(method = RequestMethod.GET, value = "/{id}/calculate")
     public ResponseEntity<OperationValueResult> calculate(
             @PathVariable("id") long operationId
     ) throws Exception {
-        return ResponseEntity.status(HttpStatus.CREATED).body(operationService.calculate(
+        return ResponseEntity.status(HttpStatus.OK).body(operationService.calculate(
                 operationService.findOrFail(operationId)
         ));
     }
 
     @RequestMapping(method = RequestMethod.GET, value = "/report")
     public ResponseEntity<?> report() {
-        return ResponseEntity.status(HttpStatus.OK).body(operationService.countLastSevenDays());
+        return ResponseEntity.status(HttpStatus.OK).body(operationService.countVehicleTypeLastSevenDays());
     }
 }

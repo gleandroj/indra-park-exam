@@ -56,6 +56,7 @@ public class OperationRepositoryIntegrationTest extends BaseTest {
 
     @Test()
     public void it_should_filter_operations_between_datetime() {
+        OperationSpecification operationSpecification = new OperationSpecification();
         entityManager.persistAndFlush(operation);
 
         List<Operation> result = operationRepository.findAll(
@@ -130,7 +131,25 @@ public class OperationRepositoryIntegrationTest extends BaseTest {
     }
 
     @Test()
-    public void it_should_get_last_seven_days() {
+    public void it_should_get_all_operations() {
+        entityManager.persistAndFlush(operation);
+        List<Operation> result = operationRepository.findAll(
+                OperationSpecification.filter(
+                        null, null, null
+                )
+        );
+        assertThat(result.size()).isEqualTo(1);
+        Operation saved = result.get(0);
 
+        assertThat(saved).isNotNull().hasSameClassAs(operation);
+        assertThat(saved.getId()).isNotNull();
+        assertThat(saved.getExitedAt()).isEqualTo(operation.getExitedAt());
+        assertThat(saved.getEnteredAt()).isEqualTo(operation.getEnteredAt());
+        assertThat(saved.getType()).isEqualTo(operation.getType());
+        assertThat(saved.getVehicle()).isNotNull();
+        assertThat(saved.getVehicle().getType()).isEqualTo(operation.getVehicle().getType());
+        assertThat(saved.getVehicle().getPlate()).isEqualTo(operation.getVehicle().getPlate());
+        assertThat(saved.getVehicle().getModel()).isEqualTo(operation.getVehicle().getModel());
     }
+
 }

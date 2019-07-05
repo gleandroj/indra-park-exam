@@ -1,13 +1,12 @@
 package com.indraparkapi.persistence.services;
 
+import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.indraparkapi.exceptions.ApiException;
 import com.indraparkapi.persistence.models.Operation;
 import com.indraparkapi.persistence.models.OperationValueResult;
-import com.indraparkapi.persistence.models.LastDaysDataSet;
 import com.indraparkapi.persistence.models.Vehicle;
 import com.indraparkapi.persistence.repositories.OperationRepository;
 import com.indraparkapi.persistence.specifications.OperationSpecification;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
@@ -57,9 +56,9 @@ public class OperationService {
         return OperationValueResult.calculateFor(operation, LocalDateTime.now());
     }
 
-    public List<LastDaysDataSet> countLastSevenDays() {
+    public List<ObjectNode> countVehicleTypeLastSevenDays() {
         LocalDateTime from = LocalDateTime.of(LocalDate.now().minusDays(6), LocalTime.of(0, 0, 0));
         LocalDateTime to = LocalDateTime.of(LocalDate.now(), LocalTime.of(23, 59, 59));
-        return this.operationRepository.findCountPerDay(from, to);
+        return this.operationRepository.countVehicleTypeBetween(from, to);
     }
 }

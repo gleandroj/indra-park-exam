@@ -1,7 +1,7 @@
 package com.indraparkapi.persistence.repositories;
 
+import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.indraparkapi.persistence.models.Operation;
-import com.indraparkapi.persistence.models.LastDaysDataSet;
 import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.CrudRepository;
@@ -25,13 +25,12 @@ public interface OperationRepository extends CrudRepository<Operation, Long>, Jp
                     "                         cross join generate_series(0, 3) vts(type)) series(day, type) " +
                     "                         on series.day = date_trunc('day', op.entered_at) and series.type = op.vehicle_type " +
                     "                         group by series.day, series.type) " +
-                    "select last_days.entered_at as enteredAt, " +
-                    "       json_agg(json_build_object('type', last_days.vehicle_type, 'quantity', last_days.quantity)) as types " +
+                    "select json_build_object('vehicleType', last_days.vehicle_type, 'data', jsonb_agg(json_build_array(extract(epoch from last_days.entered_at) * 1000, last_days.quantity)))" +
                     "from last_days " +
-                    "group by last_days.entered_at",
+                    "group by last_days.vehicle_type order by last_days.vehicle_type ASC",
             nativeQuery = true
     )
-    List<LastDaysDataSet> findCountPerDay(
+    List<ObjectNode> countVehicleTypeBetween(
             @Param("fromDate") LocalDateTime from,
             @Param("toDate") LocalDateTime to
     );
