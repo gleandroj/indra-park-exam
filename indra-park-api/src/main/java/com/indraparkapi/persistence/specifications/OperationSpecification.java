@@ -12,7 +12,7 @@ public class OperationSpecification {
     private static ZoneId zoneId = ZoneId.of("America/Sao_Paulo");
 
     private static Specification<Operation> vehiclePlateContains(String plate) {
-        return (op, cq, cb) -> plate != null ? cb.like(cb.lower(op.get("vehicle").get("plate")), "%" + plate.toLowerCase() + "%") : null;
+        return (op, cq, cb) -> plate != null && plate.length() > 0 ? cb.like(cb.lower(op.get("vehicle").get("plate")), "%" + plate.toLowerCase() + "%") : null;
     }
 
     private static Specification<Operation> enteredAtBetween(LocalDateTime from, LocalDateTime to) {

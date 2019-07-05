@@ -7,6 +7,8 @@ import com.indraparkapi.persistence.models.OperationValueResult;
 import com.indraparkapi.persistence.models.Vehicle;
 import com.indraparkapi.persistence.repositories.OperationRepository;
 import com.indraparkapi.persistence.specifications.OperationSpecification;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
@@ -34,12 +36,16 @@ public class OperationService {
         return op.get();
     }
 
-    public List<Operation> filter(
+    public Page<Operation> filter(
             LocalDateTime from,
             LocalDateTime to,
-            String plate
+            String plate,
+            Pageable pageable
     ) {
-        return this.operationRepository.findAll(OperationSpecification.filter(from, to, plate));
+        return this.operationRepository.findAll(
+                OperationSpecification.filter(from, to, plate),
+                pageable
+        );
     }
 
     public Operation entry(Vehicle vehicle) {

@@ -67,7 +67,7 @@ public class OperationControllerTest extends BaseTest {
 
         mockMvc.perform(get(BASE_URL)).andDo(print()).andExpect(status().isOk())
                 .andExpect(content().contentType(MediaType.APPLICATION_JSON_UTF8))
-                .andExpect(jsonPath("$[0].id", is(operation.getId().intValue())));
+                .andExpect(jsonPath("$['content'][0].id", is(operation.getId().intValue())));
     }
 
     @Test
@@ -76,7 +76,7 @@ public class OperationControllerTest extends BaseTest {
 
         mockMvc.perform(get(BASE_URL).param("from", from).param("to", to)).andDo(print()).andExpect(status().isOk())
                 .andExpect(content().contentType(MediaType.APPLICATION_JSON_UTF8))
-                .andExpect(jsonPath("$[0].id", is(operation.getId().intValue())));
+                .andExpect(jsonPath("$['content'][0].id", is(operation.getId().intValue())));
     }
 
     @Test
@@ -85,7 +85,7 @@ public class OperationControllerTest extends BaseTest {
 
         mockMvc.perform(get(BASE_URL).param("from", DateTimeFormatter.ISO_LOCAL_DATE_TIME.format(this.now().plusDays(1))).param("to", DateTimeFormatter.ISO_LOCAL_DATE_TIME.format(this.now().plusDays(1)))).andDo(print()).andExpect(status().isOk())
                 .andExpect(content().contentType(MediaType.APPLICATION_JSON_UTF8))
-                .andExpect(jsonPath("$", hasSize(0)));
+                .andExpect(jsonPath("$['content']", hasSize(0)));
     }
 
     @Test
@@ -93,8 +93,8 @@ public class OperationControllerTest extends BaseTest {
         operationRepository.save(operation);
         mockMvc.perform(get(BASE_URL).param("plate", operation.getVehicle().getPlate())).andDo(print()).andExpect(status().isOk())
                 .andExpect(content().contentType(MediaType.APPLICATION_JSON_UTF8))
-                .andExpect(jsonPath("$", hasSize(1)))
-                .andExpect(jsonPath("$[0]['vehicle']['plate']", is(operation.getVehicle().getPlate())));
+                .andExpect(jsonPath("$['content']", hasSize(1)))
+                .andExpect(jsonPath("$['content'][0]['vehicle']['plate']", is(operation.getVehicle().getPlate())));
     }
 
     @Test
@@ -102,8 +102,8 @@ public class OperationControllerTest extends BaseTest {
         operationRepository.save(operation);
         mockMvc.perform(get(BASE_URL).param("from", from).param("to", to).param("plate", operation.getVehicle().getPlate())).andDo(print()).andExpect(status().isOk())
                 .andExpect(content().contentType(MediaType.APPLICATION_JSON_UTF8))
-                .andExpect(jsonPath("$", hasSize(1)))
-                .andExpect(jsonPath("$[0]['vehicle']['plate']", is(operation.getVehicle().getPlate())));
+                .andExpect(jsonPath("$['content']", hasSize(1)))
+                .andExpect(jsonPath("$['content'][0]['vehicle']['plate']", is(operation.getVehicle().getPlate())));
     }
 
 

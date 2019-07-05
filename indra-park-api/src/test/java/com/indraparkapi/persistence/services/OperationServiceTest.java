@@ -13,6 +13,11 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.junit.MockitoJUnitRunner;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.jpa.domain.Specification;
 
 import static org.mockito.AdditionalAnswers.returnsFirstArg;
 import static org.mockito.ArgumentMatchers.*;
@@ -197,15 +202,15 @@ public class OperationServiceTest extends BaseTest {
 
     @Test()
     public void it_should_return_a_list_of_operations() {
-        List<Operation> operations = new ArrayList<>();
-        operations.add(operation);
+        List<Operation> list = new ArrayList<>();
+        list.add(operation);
+        Page<Operation> operations = new PageImpl<>(list);
 
-        Mockito.when(operationRepository.findAll(any())).thenReturn(operations);
+        Mockito.when(operationRepository.findAll(any(Specification.class), any(Pageable.class))).thenReturn(operations);
 
-        List<Operation> list = operationService.filter(null, null, null);
+        Page<Operation> page = operationService.filter(null, null, null, PageRequest.of(10, 10));
 
-        assertThat(list.contains(operation)).isTrue();
-        assertThat(list.size()).isEqualTo(1);
+        assertThat(page.getTotalElements()).isEqualTo(1);
     }
 
     @Test()

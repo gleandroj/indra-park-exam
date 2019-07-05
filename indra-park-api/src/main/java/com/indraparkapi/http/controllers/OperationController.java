@@ -6,13 +6,15 @@ import com.indraparkapi.persistence.models.OperationValueResult;
 import com.indraparkapi.persistence.models.Vehicle;
 import com.indraparkapi.persistence.services.OperationService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
+import org.springframework.data.web.PageableDefault;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.time.LocalDateTime;
-import java.util.List;
 
 @RestController
 @RequestMapping(value = "/api/operations")
@@ -22,12 +24,15 @@ public class OperationController {
     private OperationService operationService;
 
     @RequestMapping(method = RequestMethod.GET)
-    public ResponseEntity<List<Operation>> filter(
+    public ResponseEntity<?> filter(
             @RequestParam(name = "from", required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) LocalDateTime fromData,
             @RequestParam(name = "to", required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) LocalDateTime toData,
-            @RequestParam(name = "plate", required = false) String plate
+            @RequestParam(name = "plate", required = false) String plate,
+            @PageableDefault(size = 10, sort = "enteredAt", direction = Sort.Direction.DESC) Pageable pageable
     ) {
-        return ResponseEntity.ok(this.operationService.filter(fromData, toData, plate == null || plate.equals("") ? null : plate));
+        return ResponseEntity.ok(this.operationService.filter(
+                fromData, toData, plate, pageable
+        ));
     }
 
     @RequestMapping(method = RequestMethod.POST)
