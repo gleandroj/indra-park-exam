@@ -1,1 +1,1 @@
-export { SupportPageComponent } from './support-page/support-page.component';
+export { SupportComponent } from './support/support.component';

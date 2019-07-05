@@ -6,7 +6,6 @@ import { SupportModule } from '../support/support.module';
 import { CoreModule } from '../core/core.module';
 
 import * as Pages from './pages';
-// import * as Dialogs from './dialogs';
 import * as AppComponents from './components';
 
 const PagesComponents = [
@@ -15,7 +14,9 @@ const PagesComponents = [
     Pages.OperationsPageComponent
 ];
 
-const DialogComponents = [];
+const DialogComponents = [
+    AppComponents.OperationEntryDialogComponent
+];
 
 const Components = [
     AppComponents.LayoutMenuComponent,
@@ -25,6 +26,7 @@ const Components = [
 @NgModule({
     declarations: [
         ...Components,
+        ...DialogComponents,
         ...PagesComponents
     ],
     imports: [

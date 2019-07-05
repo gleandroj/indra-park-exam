@@ -1,5 +1,5 @@
 import { Component } from '@angular/core';
-import { SupportPageComponent } from '../../../../support/components';
+import { SupportComponent } from '../../../../support/components';
 import { menus } from '../../../menus';
 import { Router, NavigationEnd } from '@angular/router';
 import { filter, distinctUntilChanged, tap, takeUntil } from 'rxjs/operators';
@@ -9,7 +9,7 @@ import { filter, distinctUntilChanged, tap, takeUntil } from 'rxjs/operators';
   templateUrl: 'layout-page.component.html',
   styleUrls: ['layout-page.component.less']
 })
-export class LayoutPageComponent extends SupportPageComponent {
+export class LayoutPageComponent extends SupportComponent {
 
   sideMode: String = 'over';
   isSideOpen = false;

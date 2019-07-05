@@ -5,6 +5,25 @@ export enum VehicleType {
     Pickup
 };
 
+export const vehicleTypesLabels = [
+    {
+        type: VehicleType.Car,
+        text: "Carro",
+    },
+    {
+        type: VehicleType.Motorcycle,
+        text: "Moto",
+    },
+    {
+        type: VehicleType.Pickup,
+        text: "Caminhonete",
+    },
+    {
+        type: VehicleType.Truck,
+        text: "Caminhão",
+    }
+];
+
 export interface Vehicle {
     type: VehicleType;
     model: string;

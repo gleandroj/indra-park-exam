@@ -1,16 +1,18 @@
 import { Component } from '@angular/core';
-import { SupportPageComponent } from '../../../support/components';
+import { SupportComponent } from '../../../support/components';
 import * as moment from 'moment';
 import { OperationService } from 'src/app/core/services/operation.service';
 import { take, tap, distinctUntilChanged, debounceTime, map, takeUntil } from 'rxjs/operators';
 import { Subject } from 'rxjs';
+import { MatDialog } from '@angular/material';
+import { OperationEntryDialogComponent } from '../../components';
 
 @Component({
   selector: 'app-operations-page',
   templateUrl: 'operations-page.component.html',
   styleUrls: ['operations-page.component.less']
 })
-export class OperationsPageComponent extends SupportPageComponent {
+export class OperationsPageComponent extends SupportComponent {
 
   searchSubject = new Subject();
 
@@ -24,7 +26,8 @@ export class OperationsPageComponent extends SupportPageComponent {
   loading: boolean;
 
   constructor(
-    private operationService: OperationService
+    private operationService: OperationService,
+    public dialog: MatDialog
   ) {
     super();
     this.refresh(true);
@@ -44,5 +47,15 @@ export class OperationsPageComponent extends SupportPageComponent {
         take(1),
         tap(() => this.loading = false)
       ).subscribe(data => this.dataSource = data);
+  }
+
+  entry(){
+    const dialogRef = this.dialog.open(OperationEntryDialogComponent, {
+      data: {}
+    });
+
+    dialogRef.afterClosed().subscribe(result => {
+      console.log(result);
+    });
   }
 }

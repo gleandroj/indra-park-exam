@@ -1,7 +1,7 @@
 import { OnDestroy } from '@angular/core';
 import { Subject } from 'rxjs';
 
-export abstract class SupportPageComponent implements OnDestroy {
+export abstract class SupportComponent implements OnDestroy {
 
     protected $onDestroy = new Subject();
 

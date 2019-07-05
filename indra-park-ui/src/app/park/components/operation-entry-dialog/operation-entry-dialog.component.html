@@ -1,0 +1,20 @@
+<h1 mat-dialog-title>Realizar Entrada</h1>
+<div [formGroup]="form" mat-dialog-content fxLayout="column">
+    <mat-form-field>
+        <input placeholder="Modelo" matInput formControlName="model">
+    </mat-form-field>
+    <mat-form-field>
+        <input placeholder="Placa" matInput formControlName="plate">
+    </mat-form-field>
+    <mat-form-field>
+        <mat-label>Tipo</mat-label>
+        <mat-select formControlName="type">
+            <mat-option [value]="vehicleType.type" *ngFor="let vehicleType of vehicleTypes">{{ vehicleType.text }}
+            </mat-option>
+        </mat-select>
+    </mat-form-field>
+</div>
+<div mat-dialog-actions>
+    <button mat-button (click)="close()">Cancelar</button>
+    <button [disabled]="form.invalid" mat-button mat-raised-button color="accent" (click)="save()">Salvar</button>
+</div>
