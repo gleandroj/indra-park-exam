@@ -11,13 +11,15 @@ import * as AppComponents from './components';
 
 const PagesComponents = [
     Pages.LayoutPageComponent,
-    Pages.DashboardPageComponent
+    Pages.DashboardPageComponent,
+    Pages.OperationsPageComponent
 ];
 
 const DialogComponents = [];
 
 const Components = [
-    AppComponents.LayoutMenuComponent
+    AppComponents.LayoutMenuComponent,
+    AppComponents.OperationListComponent
 ];
 
 @NgModule({

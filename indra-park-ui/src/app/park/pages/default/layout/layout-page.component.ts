@@ -1,5 +1,8 @@
 import { Component } from '@angular/core';
 import { SupportPageComponent } from '../../../../support/components';
+import { menus } from '../../../menus';
+import { Router, NavigationEnd } from '@angular/router';
+import { filter, distinctUntilChanged, tap, takeUntil } from 'rxjs/operators';
 
 @Component({
   selector: 'app-layout-page',
@@ -8,32 +11,24 @@ import { SupportPageComponent } from '../../../../support/components';
 })
 export class LayoutPageComponent extends SupportPageComponent {
 
-    sideMode: String = 'over';
-    isSideOpen = false;
-    title = 'Indra Park';
-    menus = [
-      {
-        routeLink: '/indra-park/dashboard',
-        icon: 'dashboard',
-        title: 'Dashboard'
-      },
-      {
-        routeLink: '/test',
-        icon: 'receipt',
-        title: 'Operações'
-      }
-    ];
+  sideMode: String = 'over';
+  isSideOpen = false;
+  title = 'Indra Park';
+  menus = menus;
 
-    constructor(
-    ) {
-        super();
-    }
+  constructor(
+    router: Router
+  ) {
+    super();
+    router.events.pipe(
+      filter(event => event instanceof NavigationEnd),
+      distinctUntilChanged(),
+      tap(() => this.isSideOpen = false),
+      takeUntil(this.$onDestroy)
+    ).subscribe();
+  }
 
-    toggleSideNav() {
-        this.isSideOpen = !this.isSideOpen;
-    }
-
-    isAuthorized(item) {
-        return true;
-    }
+  toggleSideNav() {
+    this.isSideOpen = !this.isSideOpen;
+  }
 }

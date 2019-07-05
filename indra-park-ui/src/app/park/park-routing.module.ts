@@ -15,6 +15,10 @@ const routes: Routes = [
             {
                 path: 'dashboard',
                 component: Pages.DashboardPageComponent
+            },
+            {
+                path: 'operations',
+                component: Pages.OperationsPageComponent
             }
         ]
     }
