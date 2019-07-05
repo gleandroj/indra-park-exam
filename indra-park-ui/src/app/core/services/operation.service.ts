@@ -4,5 +4,5 @@ import { Operation } from '../entities';
 
 @Injectable()
 export class OperationService extends AbstractService<Operation> {
-  protected resourceURL = '/api/operations';
+  protected resourceURL = 'operations';
 }

@@ -1,9 +1,10 @@
 import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
+import { environment } from '../../../environments/environment';
 
 export abstract class AbstractService<T> {
 
-    protected baseURL = '/api';
+    protected baseURL = environment.API_URL;
 
     protected abstract get resourceURL();
 

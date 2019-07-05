@@ -1,8 +1,11 @@
-import {NgModule, Provider} from '@angular/core';
-import {ModuleWithProviders} from '@angular/core';
-import {SupportModule} from '../support/support.module';
+import { NgModule, Provider } from '@angular/core';
+import { ModuleWithProviders } from '@angular/core';
+import { SupportModule } from '../support/support.module';
+import * as CoreServices from './services/operation.service'
 
-const Services: Provider[] = [];
+const Services: Provider[] = [
+    CoreServices.OperationService
+];
 
 const components = [];
 
