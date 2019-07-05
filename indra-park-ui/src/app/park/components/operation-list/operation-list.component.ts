@@ -1,6 +1,6 @@
 import { Component, Input, Output, EventEmitter } from '@angular/core';
-import { Pageable } from 'src/app/support/interfaces/pageable';
-import { Operation } from 'src/app/core/entities';
+import { Pageable } from '../../../support/interfaces/pageable';
+import { Operation } from '../../../core/entities';
 
 @Component({
   selector: 'app-operation-list',

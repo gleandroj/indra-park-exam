@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
-import { AbstractService } from 'src/app/support/services';
-import { Operation, Vehicle, OperationValueResult } from '../entities';
+import { AbstractService } from '../../support/services';
+import { Operation, Vehicle, OperationValueResult, VehicleType } from '../entities';
 import { Observable } from 'rxjs';
 
 @Injectable()
@@ -18,6 +18,10 @@ export class OperationService extends AbstractService<Operation> {
 
   public calculate(id: number): Observable<OperationValueResult> {
     return this.http.get<OperationValueResult>(`${this.baseURL}/${this.resourceURL}/${id}/calculate`);
+  }
+
+  public report() {
+    return this.http.get<{ vehicleType: VehicleType }[]>(`${this.baseURL}/${this.resourceURL}/report`);
   }
 
 }

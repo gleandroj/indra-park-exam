@@ -5,22 +5,29 @@ export enum VehicleType {
     Pickup
 };
 
+export const vehicleTypeDescription = {
+    0: "Carro",
+    1: "Moto",
+    2: "Caminhão",
+    3: "Caminhonete"
+};
+
 export const vehicleTypesLabels = [
     {
         type: VehicleType.Car,
-        text: "Carro",
+        text: vehicleTypeDescription[VehicleType.Car],
     },
     {
         type: VehicleType.Motorcycle,
-        text: "Moto",
+        text: vehicleTypeDescription[VehicleType.Motorcycle],
     },
     {
         type: VehicleType.Pickup,
-        text: "Caminhonete",
+        text: vehicleTypeDescription[VehicleType.Pickup],
     },
     {
         type: VehicleType.Truck,
-        text: "Caminhão",
+        text: vehicleTypeDescription[VehicleType.Truck],
     }
 ];
 

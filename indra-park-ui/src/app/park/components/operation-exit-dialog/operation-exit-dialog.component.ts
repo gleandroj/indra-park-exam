@@ -1,8 +1,8 @@
 import { Component, Inject } from '@angular/core';
 import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material';
-import { OperationService } from 'src/app/core/services/operation.service';
+import { OperationService } from '../../../core/services/operation.service';
 import { SupportComponent } from '../../../support/components';
-import { Operation, OperationValueResult } from 'src/app/core/entities';
+import { Operation, OperationValueResult } from '../../../core/entities';
 import { tap, take } from 'rxjs/operators';
 
 @Component({

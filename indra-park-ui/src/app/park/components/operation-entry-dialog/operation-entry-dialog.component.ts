@@ -1,7 +1,7 @@
 import { Component } from '@angular/core';
 import { MatDialogRef } from '@angular/material';
-import { Vehicle, vehicleTypesLabels } from 'src/app/core/entities';
-import { OperationService } from 'src/app/core/services/operation.service';
+import { Vehicle, vehicleTypesLabels } from '../../../core/entities';
+import { OperationService } from '../../../core/services/operation.service';
 import { FormBuilder, Validators, FormGroup } from '@angular/forms';
 import { tap, takeUntil } from 'rxjs/operators';
 import { SupportComponent } from '../../../support/components';
