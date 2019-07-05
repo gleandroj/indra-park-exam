@@ -1,1 +1,36 @@
-<h1>Operations Pages Works</h1>
+<mat-card>
+    <div fxLayout="row wrap">
+        <mat-form-field appearance="outline" fxFlex.gt-sm="20%" fxFlex.gt-xs="30%" fxFlex.xs="100%">
+            <mat-label>Placa</mat-label>
+            <input #input (input)="plateSubject.next(input.value)" matInput type="text" placeholder="Digite aqui...">
+            <mat-icon matPrefix>search</mat-icon>
+            <mat-icon style="cursor: pointer;" *ngIf="input.value != null && input.value != ''"
+                (click)="plateSubject.next(input.value = null)" matSuffix>
+                clear
+            </mat-icon>
+        </mat-form-field>
+        <span fxFlex="1"></span>
+        <mat-form-field appearance="outline" fxFlex.gt-sm="20%" fxFlex.gt-xs="30%" fxFlex.xs="100%">
+            <input matInput [(ngModel)]="filter.from" (ngModelChange)="refresh(true)" (focus)="picker.open()"
+                [matDatepicker]="picker" placeholder="Dt. início">
+            <mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>
+            <mat-datepicker #picker></mat-datepicker>
+        </mat-form-field>
+        <span fxFlex="1"></span>
+        <mat-form-field appearance="outline" fxFlex.gt-sm="20%" fxFlex.gt-xs="30%" fxFlex.xs="100%">
+            <input matInput [(ngModel)]="filter.to" (ngModelChange)="refresh(true)" (focus)="picker2.open()"
+                [matDatepicker]="picker2" placeholder="Dt. fim">
+            <mat-datepicker-toggle matSuffix [for]="picker2"></mat-datepicker-toggle>
+            <mat-datepicker #picker2></mat-datepicker>
+        </mat-form-field>
+    </div>
+
+    <div fxLayout="column" style="overflow: auto;">
+        <app-operation-list [dataSource]="dataSource"></app-operation-list>
+    </div>
+</mat-card>
+<div class="mat-fab-buttom">
+    <button mat-fab color="accent">
+        <mat-icon>add</mat-icon>
+    </button>
+</div>

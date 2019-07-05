@@ -7,4 +7,17 @@ import { SupportPageComponent } from '../../../support/components';
   styleUrls: ['operations-page.component.less']
 })
 export class OperationsPageComponent extends SupportPageComponent {
+  filter = {
+    from: null,
+    to: null,
+    plate: null
+  };
+
+  dataSource = [
+    {}, {}, {}, {}, {}
+  ];
+
+  refresh(loading = false) {
+
+  }
 }
