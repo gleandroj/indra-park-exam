@@ -1,23 +1,29 @@
-import {BrowserModule} from '@angular/platform-browser';
-import {NgModule, ModuleWithProviders} from '@angular/core';
+import { BrowserModule } from '@angular/platform-browser';
+import { NgModule, ModuleWithProviders } from '@angular/core';
 
-import {ParkRoutingModule} from './park-routing.module';
-import {SupportModule} from '../support/support.module';
-import {CoreModule} from '../core/core.module';
+import { ParkRoutingModule } from './park-routing.module';
+import { SupportModule } from '../support/support.module';
+import { CoreModule } from '../core/core.module';
 
-// import * as Pages from './pages';
+import * as Pages from './pages';
 // import * as Dialogs from './dialogs';
-// import * as AppComponents from './components';
+import * as AppComponents from './components';
 
-const PagesComponents = [];
+const PagesComponents = [
+    Pages.LayoutPageComponent,
+    Pages.DashboardPageComponent
+];
 
 const DialogComponents = [];
 
-const Components = [];
+const Components = [
+    AppComponents.LayoutMenuComponent
+];
 
 @NgModule({
     declarations: [
-        Components
+        ...Components,
+        ...PagesComponents
     ],
     imports: [
         BrowserModule,

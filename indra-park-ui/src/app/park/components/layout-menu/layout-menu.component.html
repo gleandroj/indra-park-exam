@@ -1,0 +1,12 @@
+<ul class="mat-menu">
+    <ng-container *ngFor="let item of menus;">
+        <li>
+            <a mat-ripple [routerLink]="item.routeLink" routerLinkActive="active">
+                <mat-icon>{{ item.icon }} </mat-icon>
+                <div class="list-text">
+                    {{ item.title }}
+                </div>
+            </a>
+        </li>
+    </ng-container>
+</ul>

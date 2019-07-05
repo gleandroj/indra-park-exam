@@ -1,0 +1,36 @@
+:host{
+  .mat-menu {
+    list-style-type: none;
+    padding: 0;
+    margin: 0;
+    li {
+      position: relative;
+      display: flex;
+      flex-direction: row;
+      flex: 1;
+      outline: none;
+
+      a {
+        text-decoration: none;
+        outline: none;
+        color: #666;
+        position: relative;
+        display: flex;
+        flex-direction: row;
+        width: 100%;
+        padding: 10px;
+
+        .list-text {
+          margin-left: 20px;
+          vertical-align: middle;
+          margin-top: 3px;
+        }
+
+        &.active {
+          color: #3f51b5;
+          background: rgba(0, 0, 0, .1)
+        }
+      }
+    }
+  }
+}

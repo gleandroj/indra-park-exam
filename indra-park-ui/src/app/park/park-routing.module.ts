@@ -1,11 +1,11 @@
 import {NgModule} from '@angular/core';
 import {Routes, RouterModule} from '@angular/router';
-import * as ParkPages from './pages';
+import * as Pages from './pages';
 
 const routes: Routes = [
     {
         path: 'indra-park',
-        component: ParkPages.LayoutPageComponent,
+        component: Pages.LayoutPageComponent,
         children: [
             {
                 path: '',
@@ -14,7 +14,7 @@ const routes: Routes = [
             },
             {
                 path: 'dashboard',
-                component: ParkPages.DashboardPageComponent
+                component: Pages.DashboardPageComponent
             }
         ]
     }
