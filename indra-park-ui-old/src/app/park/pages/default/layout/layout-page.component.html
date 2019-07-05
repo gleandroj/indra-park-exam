@@ -1,0 +1,24 @@
+
+<div class="main-container" >
+  <mat-toolbar color="primary" class="topbar telative">
+
+    <button mat-button [matMenuTriggerFor]="menu">Menu</button>
+    <mat-menu #menu="matMenu">
+      <button [routerLink]="['/test']" mat-menu-item>Test</button>
+    </mat-menu>
+
+  </mat-toolbar>
+  <mat-sidenav-container class="example-sidenav-container" >
+
+    <mat-sidenav-content class="page-wrapper">
+
+      <div class="page-content">
+
+        <router-outlet>
+        </router-outlet>
+
+      </div>
+
+    </mat-sidenav-content>
+  </mat-sidenav-container>
+</div>
