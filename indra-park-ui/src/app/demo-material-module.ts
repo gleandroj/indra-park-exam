@@ -6,6 +6,10 @@
  * found in the LICENSE file at https://angular.io/license
  */
 
+/**
+ * Chart: https://jsfiddle.net/dpaw7tLv/
+ */
+
 import { NgModule } from '@angular/core';
 import {
   MatAutocompleteModule,
