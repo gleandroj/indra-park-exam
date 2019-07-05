@@ -1,6 +1,7 @@
 import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { environment } from '../../../environments/environment';
+import { Pageable } from '../interfaces/pageable';
 
 export abstract class AbstractService<T> {
 
@@ -8,11 +9,13 @@ export abstract class AbstractService<T> {
 
     protected abstract get resourceURL();
 
-    constructor(protected http: HttpClient) {}
+    constructor(protected http: HttpClient) { }
 
-    public all(filters?: any): Observable<T[]> {
-        const mapped = this.buildParameter(filters);
-        return this.http.get<T[]>(
+    public paginate(filters?: any): Observable<Pageable<T>> {
+        const mapped = this.buildParameter({
+            ...filters
+        });
+        return this.http.get<Pageable<T>>(
             `${this.baseURL}/${this.resourceURL}${mapped}`
         );
     }
@@ -40,7 +43,7 @@ export abstract class AbstractService<T> {
     protected buildParameter(data: any) {
         const _filter = Object.keys(data).map(k => {
             const value = this.formatValue(data[k]);
-            return value ? `${k}=${value}` : null;
+            return value !== null && value !== undefined ? `${k}=${value}` : null;
         });
         const filter = _filter.filter(f => f != null).join('&');
         return filter && filter.length > 0 ? `?${filter}` : '';

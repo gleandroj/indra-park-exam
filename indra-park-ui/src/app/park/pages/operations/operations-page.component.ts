@@ -6,6 +6,14 @@ import { MatDialog, MatSnackBar } from '@angular/material';
 import { OperationEntryDialogComponent, OperationExitDialogComponent } from '../../components';
 import { Operation } from '../../../core/entities';
 import * as moment from 'moment';
+import { Pageable } from 'src/app/support/interfaces/pageable';
+
+interface RefreshParams {
+  pageIndex?: number;
+  pageSize?: number;
+  active?: string;
+  direction?: string;
+};
 
 @Component({
   selector: 'app-operations-page',
@@ -17,10 +25,13 @@ export class OperationsPageComponent extends SupportComponent {
   filter = {
     from: moment().startOf('day').toDate(),
     to: moment().endOf('day').toDate(),
-    plate: null
+    plate: null,
+    page: 0,
+    size: 5,
+    sort: null
   };
 
-  dataSource = [];
+  dataSource: Pageable<Operation> = {};
   loading: boolean;
 
   constructor(
@@ -29,7 +40,7 @@ export class OperationsPageComponent extends SupportComponent {
     public toastr: MatSnackBar
   ) {
     super();
-    this.refresh(true);
+    this.refresh({});
   }
 
   openToast(msg: string) {
@@ -38,13 +49,18 @@ export class OperationsPageComponent extends SupportComponent {
     });
   }
 
-  refresh(loading = false) {
-    this.loading = loading;
-    this.operationService.all(this.filter)
-      .pipe(
-        take(1),
-        tap(() => this.loading = false)
-      ).subscribe(data => this.dataSource = data);
+  refresh({ pageIndex, pageSize, active, direction }: RefreshParams) {
+    this.loading = true;
+    this.filter = {
+      ...this.filter,
+      page: pageIndex !== undefined ? pageIndex : this.filter.page,
+      size: pageSize !== undefined ? pageSize : this.filter.size,
+      sort: active && direction ? active + ',' + direction : this.filter.sort
+    };
+    this.operationService.paginate(this.filter).pipe(
+      take(1),
+      tap(() => this.loading = false)
+    ).subscribe(data => this.dataSource = data);
   }
 
   entry() {
@@ -54,7 +70,7 @@ export class OperationsPageComponent extends SupportComponent {
 
     dialogRef.afterClosed().subscribe((result: Operation) => {
       if (result) {
-        this.dataSource = [result].concat(this.dataSource);
+        this.dataSource.content = [result].concat(this.dataSource.content);
         this.openToast('Operação de entrada realizada com sucesso!');
       }
     });
