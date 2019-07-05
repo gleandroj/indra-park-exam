@@ -1,4 +1,4 @@
-import { Component, Input } from '@angular/core';
+import { Component, Input, Output, EventEmitter } from '@angular/core';
 
 @Component({
   selector: 'app-operation-list',
@@ -10,4 +10,5 @@ export class OperationListComponent {
   pageSize = 5;
   pageSizeOptions = [5, 10, 25, 100];
   @Input() dataSource = [];
+  @Output() exit = new EventEmitter();
 }

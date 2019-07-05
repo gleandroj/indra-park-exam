@@ -15,12 +15,14 @@ const PagesComponents = [
 ];
 
 const DialogComponents = [
-    AppComponents.OperationEntryDialogComponent
+    AppComponents.OperationEntryDialogComponent,
+    AppComponents.OperationExitDialogComponent
 ];
 
 const Components = [
     AppComponents.LayoutMenuComponent,
-    AppComponents.OperationListComponent
+    AppComponents.OperationListComponent,
+    AppComponents.OperationPageFilter
 ];
 
 @NgModule({

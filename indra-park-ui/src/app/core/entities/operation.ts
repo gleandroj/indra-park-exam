@@ -44,3 +44,14 @@ export interface Operation {
     enteredAt?: string;
     exitedAt?: string;
 }
+
+export interface OperationValueResult {
+    hours: number;
+    minutes: number;
+    seconds: number;
+    value: number;
+    totalHours: number;
+    operationId: number;
+    enteredAt: string;
+    exitedAt: string;
+}

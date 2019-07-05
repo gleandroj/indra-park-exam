@@ -1,11 +1,11 @@
 import { Component } from '@angular/core';
 import { SupportComponent } from '../../../support/components';
-import * as moment from 'moment';
 import { OperationService } from 'src/app/core/services/operation.service';
-import { take, tap, distinctUntilChanged, debounceTime, map, takeUntil } from 'rxjs/operators';
-import { Subject } from 'rxjs';
-import { MatDialog } from '@angular/material';
-import { OperationEntryDialogComponent } from '../../components';
+import { take, tap } from 'rxjs/operators';
+import { MatDialog, MatSnackBar } from '@angular/material';
+import { OperationEntryDialogComponent, OperationExitDialogComponent } from '../../components';
+import { Operation } from '../../../core/entities';
+import * as moment from 'moment';
 
 @Component({
   selector: 'app-operations-page',
@@ -13,8 +13,6 @@ import { OperationEntryDialogComponent } from '../../components';
   styleUrls: ['operations-page.component.less']
 })
 export class OperationsPageComponent extends SupportComponent {
-
-  searchSubject = new Subject();
 
   filter = {
     from: moment().startOf('day').toDate(),
@@ -27,17 +25,17 @@ export class OperationsPageComponent extends SupportComponent {
 
   constructor(
     private operationService: OperationService,
-    public dialog: MatDialog
+    public dialog: MatDialog,
+    public toastr: MatSnackBar
   ) {
     super();
     this.refresh(true);
-    this.searchSubject.pipe(
-      debounceTime(1000),
-      distinctUntilChanged(),
-      map((text) => this.filter.plate = text),
-      tap(() => this.refresh(true)),
-      takeUntil(this.$onDestroy)
-    ).subscribe();
+  }
+
+  openToast(msg: string) {
+    return this.toastr.open(msg, null, {
+      duration: 3000
+    });
   }
 
   refresh(loading = false) {
@@ -49,13 +47,29 @@ export class OperationsPageComponent extends SupportComponent {
       ).subscribe(data => this.dataSource = data);
   }
 
-  entry(){
+  entry() {
     const dialogRef = this.dialog.open(OperationEntryDialogComponent, {
       data: {}
     });
 
-    dialogRef.afterClosed().subscribe(result => {
-      console.log(result);
+    dialogRef.afterClosed().subscribe((result: Operation) => {
+      if (result) {
+        this.dataSource = [result].concat(this.dataSource);
+        this.openToast('Operação de entrada realizada com sucesso!');
+      }
+    });
+  }
+
+  exit(operation: Operation) {
+    const dialogRef = this.dialog.open(OperationExitDialogComponent, {
+      data: operation
+    });
+
+    dialogRef.afterClosed().subscribe((result: Operation) => {
+      if (result) {
+        Object.assign(operation, result);
+        this.openToast('Operação de saída realizada com sucesso!');
+      }
     });
   }
 }

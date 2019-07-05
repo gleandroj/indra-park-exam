@@ -1,1 +1,1 @@
-export { Operation, OperationType, Vehicle, VehicleType, vehicleTypesLabels } from './operation';
+export { Operation, OperationType, Vehicle, VehicleType, vehicleTypesLabels, OperationValueResult } from './operation';

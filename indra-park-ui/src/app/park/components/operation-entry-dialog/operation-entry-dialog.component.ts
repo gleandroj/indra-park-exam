@@ -1,9 +1,9 @@
 import { Component } from '@angular/core';
 import { MatDialogRef } from '@angular/material';
-import { Vehicle, VehicleType, vehicleTypesLabels } from 'src/app/core/entities';
+import { Vehicle, vehicleTypesLabels } from 'src/app/core/entities';
 import { OperationService } from 'src/app/core/services/operation.service';
 import { FormBuilder, Validators, FormGroup } from '@angular/forms';
-import { tap } from 'rxjs/operators';
+import { tap, takeUntil } from 'rxjs/operators';
 import { SupportComponent } from '../../../support/components';
 
 @Component({
@@ -28,9 +28,12 @@ export class OperationEntryDialogComponent extends SupportComponent {
             type: [null, Validators.required]
         });
         const plateControl = this.form.get('plate');
-        plateControl.valueChanges.subscribe( (value: string)  => plateControl.setValue(
-            value ? value.toUpperCase().trim() : value, {emitEvent: false}
-        ));
+        plateControl.valueChanges.pipe(
+            takeUntil(this.$onDestroy),
+            tap((value: string) => plateControl.setValue(
+                value ? value.toUpperCase().trim() : value, { emitEvent: false }
+            ))
+        ).subscribe();
     }
 
     close(): void {
@@ -38,8 +41,11 @@ export class OperationEntryDialogComponent extends SupportComponent {
     }
 
     save(): void {
-        this.operationService.entry(this.form.value as Vehicle).pipe(
+        const vehicle = this.form.value as Vehicle;
+        const enableForm = () => this.form.enable();
+        this.form.disable();
+        this.operationService.entry(vehicle).pipe(
             tap((operation) => this.dialogRef.close(operation))
-        ).subscribe();
+        ).subscribe(enableForm.bind(this), enableForm.bind(this));
     }
 }

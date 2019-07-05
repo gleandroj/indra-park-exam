@@ -1,0 +1,33 @@
+<h1 mat-dialog-title>Realizar Saída</h1>
+<div mat-dialog-content fxLayout="column">
+    <mat-form-field class="read-only" appearance="outline">
+        <mat-label>Placa</mat-label>
+        <input [value]="operation?.vehicle?.plate" matInput [disabled]="true">
+    </mat-form-field>
+
+    <mat-form-field class="read-only" appearance="outline">
+        <mat-label>Entrada</mat-label>
+        <input [value]="operation?.enteredAt | date:'dd/MM/yy HH:mm:ss' " matInput [disabled]="true">
+    </mat-form-field>
+
+    <mat-form-field class="read-only" appearance="outline">
+        <mat-label>Saída</mat-label>
+        <input [value]="result?.exitedAt | date:'dd/MM/yy HH:mm:ss'" matInput [disabled]="true">
+    </mat-form-field>
+
+    <mat-form-field class="read-only" appearance="outline">
+        <mat-label>Permanencia</mat-label>
+        <input [value]="result ? ((result.hours | number: '2.0') + ':' + (result.minutes | number: '2.0') + ':' + (result.seconds | number: '2.0')) : '' " matInput
+            [disabled]="true">
+    </mat-form-field>
+
+    <mat-form-field class="read-only" appearance="outline">
+        <mat-label>Valor</mat-label>
+        <input [value]="result ? ('R$ ' + (result.value | number:'1.2-2')) : ''" matInput [disabled]="true">
+    </mat-form-field>
+</div>
+<div mat-dialog-actions>
+    <button mat-button [disabled]="loading" (click)="close()">Cancelar</button>
+    <button mat-button mat-raised-button color="primary" [disabled]="loading" (click)="calculate()">Calcular</button>
+    <button mat-button mat-raised-button color="accent" [disabled]="!result || loading" (click)="save()">Fianlizar</button>
+</div>
