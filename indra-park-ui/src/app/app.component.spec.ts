@@ -38,7 +38,6 @@ describe('AppComponent', () => {
   });
 
   it('navigate to "" redirects you to dashboard', fakeAsync(() => {
-    (1)
     router.navigate(['/']);
     tick();
     expect(location.path()).toBe('/indra-park/dashboard');

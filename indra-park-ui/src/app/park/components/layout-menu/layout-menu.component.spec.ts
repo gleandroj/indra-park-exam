@@ -1,10 +1,14 @@
-import { TestBed, async, ComponentFixture } from '@angular/core/testing';
+import { TestBed, async, ComponentFixture, tick, fakeAsync } from '@angular/core/testing';
 import { Router } from '@angular/router';
 import { Location } from "@angular/common";
 import { LayoutMenuComponent } from './layout-menu.component';
 import { RouterTestingModule } from '@angular/router/testing';
 import { SupportModule } from 'src/app/support/support.module';
 import { By } from '@angular/platform-browser';
+import { Component } from '@angular/core';
+
+@Component({ selector: 'app-dashboard-page', template: '' })
+class DashboardPageComponent { }
 
 describe('LayoutMenuComponent', () => {
     let location: Location;
@@ -15,10 +19,16 @@ describe('LayoutMenuComponent', () => {
         TestBed.configureTestingModule({
             imports: [
                 SupportModule.forRoot(),
-                RouterTestingModule.withRoutes([]),
+                RouterTestingModule.withRoutes([
+                    {
+                        path: 'indra-park/dashboard',
+                        component: DashboardPageComponent
+                    }
+                ]),
             ],
             declarations: [
-                LayoutMenuComponent
+                LayoutMenuComponent,
+                DashboardPageComponent
             ],
         });
 
@@ -51,5 +61,15 @@ describe('LayoutMenuComponent', () => {
         expect(test[0].name).toBe('li');
         expect(test[0].query(By.css('.list-text')).nativeElement.innerHTML).toBe('Dashboard');
     });
+
+    it('should navigate when menu click', fakeAsync(() => {
+        fixture.detectChanges();
+        const app = fixture.componentInstance;
+        const test = fixture.debugElement.query(By.css('ul > li > a'));
+        expect(test.name).toBe('a');
+        test.nativeElement.click();
+        tick();
+        expect(location.path()).toBe('/indra-park/dashboard');
+    }));
 
 });
