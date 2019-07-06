@@ -49,13 +49,23 @@ export class OperationsPageComponent extends SupportComponent {
     });
   }
 
+  sort({ active, direction }) {
+    if (active && direction && direction.length > 0) {
+      return active + ',' + direction;
+    } else if (!active && !direction) {
+      return this.filter.sort;
+    } else {
+      return null;
+    }
+  }
+
   refresh({ pageIndex, pageSize, active, direction }: RefreshParams) {
     this.loading = true;
     this.filter = {
       ...this.filter,
       page: pageIndex !== undefined ? pageIndex : this.filter.page,
       size: pageSize !== undefined ? pageSize : this.filter.size,
-      sort: active && direction ? active + ',' + direction : this.filter.sort
+      sort: this.sort({ active, direction })
     };
     this.operationService.paginate(this.filter).pipe(
       take(1),
