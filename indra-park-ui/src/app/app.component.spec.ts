@@ -37,7 +37,7 @@ describe('AppComponent', () => {
     expect(app).toBeTruthy();
   });
 
-  it('navigate to "" redirects you to dashboard', fakeAsync(() => {
+  it('should navigate to "" and redirects to dashboard', fakeAsync(() => {
     router.navigate(['/']);
     tick();
     expect(location.path()).toBe('/indra-park/dashboard');

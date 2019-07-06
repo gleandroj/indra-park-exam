@@ -21,8 +21,9 @@ const pageableOperations: Pageable<Operation> = {
             }
         }
     ],
-    size: 10,
-    totalPages: 1,
+    size: 1,
+    totalPages: 2,
+    totalElements: 2,
     empty: false
 };
 
@@ -81,8 +82,47 @@ describe('OperationListComponent', () => {
         operation.exitedAt = moment().toISOString();
         fixture.detectChanges();
         tick();
-        
+
         expect(row.cells[4].innerHTML).toBe(moment(operation.exitedAt).format('DD/MM/YY HH:mm:ss'));
         expect(row.cells[5].getElementsByTagName('button')[0]).toBeUndefined();
     }));
+
+    it('should emit event when exit button click', () => {
+        pageableOperations.content[0].exitedAt = null;
+        fixture.detectChanges();
+        spyOn(fixture.componentInstance.exit, 'emit');
+        let tableRows = fixture.nativeElement.querySelectorAll('tbody > tr');
+        let row = tableRows[0];
+        const button = row.cells[5].getElementsByTagName('button')[0];
+        button.click();
+        fixture.detectChanges();
+        expect(fixture.componentInstance.exit.emit).toHaveBeenCalledWith(pageableOperations.content[0]);
+    });
+
+    it('should emit event when sortable header click', () => {
+        fixture.detectChanges();
+        spyOn(fixture.componentInstance.sort, 'emit');
+        let thead = fixture.nativeElement.querySelectorAll('tr')[0];
+        const button = thead.cells[0].getElementsByTagName('button')[0];
+        button.click();
+        fixture.detectChanges();
+        expect(fixture.componentInstance.sort.emit).toHaveBeenCalledWith({
+            active: 'vehicle.type',
+            direction: 'asc'
+        });
+    });
+
+    it('should emit event when page button click', () => {
+        fixture.detectChanges();
+        spyOn(fixture.componentInstance.page, 'emit');
+        let button = fixture.nativeElement.querySelectorAll('.mat-paginator-navigation-next')[0];
+        button.click();
+        fixture.detectChanges();
+        expect(fixture.componentInstance.page.emit).toHaveBeenCalledWith({
+            previousPageIndex: 0,
+            pageIndex: 1,
+            pageSize: 1,
+            length: 2
+        });
+    });
 });

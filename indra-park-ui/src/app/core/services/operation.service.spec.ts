@@ -38,46 +38,49 @@ const expectedOPVR: OperationValueResult = {
     operationId: expectedOperation.id
 };
 
-beforeEach(() => {
-    httpClientSpy = jasmine.createSpyObj('HttpClient', ['get', 'post']);
-    operationService = new OperationService(<any>httpClientSpy);
-});
+describe('OperationService', () => {
 
-it('should return expected Operations (HttpClient called once)', () => {
-    httpClientSpy.get.and.returnValue(of(pageableOperations));
-    operationService.paginate().subscribe(
-        pageable => expect(pageable).toEqual(pageableOperations, 'expected pageable Operations'),
-        fail
-    );
-    expect(httpClientSpy.get.calls.count()).toBe(1, 'one call');
-});
+    beforeEach(() => {
+        httpClientSpy = jasmine.createSpyObj('HttpClient', ['get', 'post']);
+        operationService = new OperationService(<any>httpClientSpy);
+    });
+
+    it('should return expected Operations (HttpClient called once)', () => {
+        httpClientSpy.get.and.returnValue(of(pageableOperations));
+        operationService.paginate().subscribe(
+            pageable => expect(pageable).toEqual(pageableOperations, 'expected pageable Operations'),
+            fail
+        );
+        expect(httpClientSpy.get.calls.count()).toBe(1, 'one call');
+    });
 
 
-it('should return a operation when make a entry (HttpClient called once)', () => {
-    httpClientSpy.post.and.returnValue(of(expectedOperation));
-    operationService.entry(vehicle).subscribe(
-        operation => expect(operation).toEqual(operation, 'expected operation'),
-        fail
-    );
-    expect(httpClientSpy.post.calls.count()).toBe(1, 'one call');
-});
+    it('should return a operation when make a entry (HttpClient called once)', () => {
+        httpClientSpy.post.and.returnValue(of(expectedOperation));
+        operationService.entry(vehicle).subscribe(
+            operation => expect(operation).toEqual(operation, 'expected operation'),
+            fail
+        );
+        expect(httpClientSpy.post.calls.count()).toBe(1, 'one call');
+    });
 
-it('should return a operation when make a exit (HttpClient called once)', () => {
-    expectedOperation.exitedAt = moment().toISOString();
-    httpClientSpy.get.and.returnValue(of(expectedOperation));
-    operationService.exit(expectedOperation.id).subscribe(
-        operation => expect(operation).toEqual(operation, 'expected operation'),
-        fail
-    );
-    expect(httpClientSpy.get.calls.count()).toBe(1, 'one call');
-});
+    it('should return a operation when make a exit (HttpClient called once)', () => {
+        expectedOperation.exitedAt = moment().toISOString();
+        httpClientSpy.get.and.returnValue(of(expectedOperation));
+        operationService.exit(expectedOperation.id).subscribe(
+            operation => expect(operation).toEqual(operation, 'expected operation'),
+            fail
+        );
+        expect(httpClientSpy.get.calls.count()).toBe(1, 'one call');
+    });
 
-it('should return a operation value result when make a calculate (HttpClient called once)', () => {
-    expectedOperation.exitedAt = moment().toISOString();
-    httpClientSpy.get.and.returnValue(of(expectedOPVR));
-    operationService.calculate(expectedOperation.id).subscribe(
-        opvr => expect(opvr).toEqual(expectedOPVR, 'expected operation'),
-        fail
-    );
-    expect(httpClientSpy.get.calls.count()).toBe(1, 'one call');
+    it('should return a operation value result when make a calculate (HttpClient called once)', () => {
+        expectedOperation.exitedAt = moment().toISOString();
+        httpClientSpy.get.and.returnValue(of(expectedOPVR));
+        operationService.calculate(expectedOperation.id).subscribe(
+            opvr => expect(opvr).toEqual(expectedOPVR, 'expected operation'),
+            fail
+        );
+        expect(httpClientSpy.get.calls.count()).toBe(1, 'one call');
+    });
 });
