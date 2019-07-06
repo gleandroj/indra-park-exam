@@ -21,7 +21,7 @@ export class OperationService extends AbstractService<Operation> {
   }
 
   public report() {
-    return this.http.get<{ vehicleType: VehicleType }[]>(`${this.baseURL}/${this.resourceURL}/report`);
+    return this.http.get<{ vehicleType: VehicleType, data: any[] }[]>(`${this.baseURL}/${this.resourceURL}/report`);
   }
 
 }
