@@ -1,8 +1,8 @@
-import {NgModule} from '@angular/core';
-import {Routes, RouterModule} from '@angular/router';
+import { NgModule } from '@angular/core';
+import { Routes, RouterModule } from '@angular/router';
 import * as Pages from './pages';
 
-const routes: Routes = [
+export const routes: Routes = [
     {
         path: 'indra-park',
         component: Pages.LayoutPageComponent,
