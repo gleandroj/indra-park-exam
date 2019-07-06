@@ -3,6 +3,7 @@ import { SupportComponent } from '../../../support/components';
 import * as Highcharts from 'highcharts'
 import { OperationService } from '../../../core/services/operation.service';
 import { take, tap, map } from 'rxjs/operators';
+import { vehicleTypeDescription } from 'src/app/core/entities';
 
 @Component({
   selector: 'app-dashboard-page',
@@ -15,20 +16,27 @@ export class DashboardPageComponent extends SupportComponent implements AfterVie
 
   chartOptions = {
     chart: {
-      type: 'line'
+      type: 'spline'
     },
     title: {
       text: 'Operações da Semana'
     },
     subtitle: false,
+    legend: {
+      verticalAlign: 'top'
+    },
     xAxis: {
       type: 'datetime',
       dateTimeLabelFormats: {
         day: '%d/%m'
-      }
+      },
+      title: false
     },
     yAxis: {
-      min: 0
+      tickInterval: 1,
+      title: false,
+      startOnTick: false,
+      endOnTick: false
     },
     tooltip: {
       headerFormat: '<div style="line-height: 0; text-align: center;"><b >{point.x:%d/%m}</b></div><br>',
@@ -40,6 +48,7 @@ export class DashboardPageComponent extends SupportComponent implements AfterVie
     },
     series: []
   };
+  chart: Highcharts.Chart;
 
   constructor(
     public operationService: OperationService
@@ -48,10 +57,16 @@ export class DashboardPageComponent extends SupportComponent implements AfterVie
   }
 
   ngAfterViewInit(): void {
-    Highcharts.chart(this.chartContainer.nativeElement, this.chartOptions as any);
+    this.chart = Highcharts.chart(this.chartContainer.nativeElement, this.chartOptions as any);
     this.operationService.report().pipe(
       take(1),
-      map(dataSet => dataSet)
+      map(dataSet => dataSet.map(series => {
+        return {
+          name: vehicleTypeDescription[series.vehicleType],
+          data: series.data
+        };
+      })),
+      tap((series: any[]) => series.forEach(s => this.chart.addSeries(s)))
     ).subscribe();
   }
 
