@@ -1,5 +1,5 @@
 <mat-card>
-    <app-operation-page-filter [(ngModel)]="filter" (ngModelChange)="refresh(true)"></app-operation-page-filter>
+    <app-operation-page-filter [(ngModel)]="filter" (ngModelChange)="refresh({})"></app-operation-page-filter>
     <div fxLayout="column" style="overflow: auto;">
         <app-operation-list (page)="refresh($event)" (sort)="refresh($event)" (exit)="exit($event)" [dataSource]="dataSource"></app-operation-list>
     </div>
